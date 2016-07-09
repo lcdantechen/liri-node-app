@@ -55,8 +55,55 @@ else if (input === "spotify-this-song") {
 							// Build a string with the songName.
 							songName = songName + "" + nodeArgs[i];
 						};
-		    console.log("You like" + "" + songName);
-				spotify.search({ type: 'track', query: songName }, function(err, data) {
+		    console.log("You like" + " " + songName);
+		    spotifyPlay();
+				
+ } 
+
+ else if (input === "movie-this") {
+
+         for (var i=3; i<nodeArgs.length; i++){
+
+							// Build a string with the songName.
+							movieName = movieName + nodeArgs[i] + " ";
+						};
+		      console.log("You like" + " " + movieName);
+		      //request from OMDB
+		      moviePlay();
+		      
+
+
+ } 
+ else if (input === "do-what-it-says") {
+      fs.readFile("random.txt", 'utf8', function(error, data){
+				  if (error){
+				  	console.log("there is an error");
+				  } else{
+				      /*console.log(data);*/
+				      var result = data.split(',');
+				      console.log(result);
+				      if (result[0]=== 'spotify-this-song') {
+				      	songName = result[1];
+				      	console.log("You like" + " " + songName);
+				      	spotifyPlay();
+				      } else if (result[0] === 'movie-this') {
+				      	movieName = result[1];
+				      	console.log("You like" + " " + movieName);
+				      	moviePlay();
+
+				      }
+				    
+				      
+				  }
+		   });
+ }
+ else {
+		console.log("please input the correct info");
+ };
+
+
+function spotifyPlay() {
+	spotify.search({ type: 'track', query: songName }, function(err, data) {
 				    if ( err ) {
 				        console.log('Error occurred: ' + err);
 				        return;
@@ -73,18 +120,12 @@ else if (input === "spotify-this-song") {
 						   }
 						 }
 				});
- } 
+};
 
- else if (input === "movie-this") {
 
-         for (var i=3; i<nodeArgs.length; i++){
+function moviePlay() {
 
-							// Build a string with the songName.
-							movieName = movieName + nodeArgs[i] + " ";
-						};
-		      console.log("You like" + " " + movieName);
-		      //request from OMDB
-		      request('http://www.omdbapi.com/?t='+ movieName + '&y=&plot=short&tomatoes=true&r=json', function (error, response, body) {
+	request('http://www.omdbapi.com/?t='+ movieName + '&y=&plot=short&tomatoes=true&r=json', function (error, response, body) {
 					  if (!error && response.statusCode == 200) {
 					    /*console.log(body);
 */					    var movieObject = JSON.parse(body);
@@ -96,35 +137,14 @@ else if (input === "spotify-this-song") {
 					    console.log("Language:" + " "+ movieObject.Language)
 					    console.log("Plot:" + " " + movieObject.Plot)
 					    console.log("Actors:" + " " + movieObject.Actors)
-					    console.log("tomatoRating" + " " + movieObject.tomatoRating)
-					    console.log("tomatoURL" + " " + movieObject.tomatoURL)
+					    console.log("tomatoRating:" + " " + movieObject.tomatoRating)
+					    console.log("tomatoURL:" + " " + movieObject.tomatoURL)
 					    
 					  }
 					})
 
 
- } 
- else if (input === "do-what-it-says") {
-      fs.readFile("random.txt", 'utf8', function(error, data){
-				  if (error){
-				  	console.log("there is an error");
-				  } else{
-				      console.log(data);
-				      var result = data.split(',');
-				      console.log(result);
-				      process.argv[2] = result[0];
-				      process.argv[3] = result[1];
-				      
-				  }
-		   });
- }
- else {
-		console.log("please input the correct info");
- };
-
-
-
-
+};
 
 
 
